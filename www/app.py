@@ -15,7 +15,7 @@ def index():
     global sock
     return render_template('index.html')
 
-@app.rpute('/connect')
+@app.route('/connect')
 def connect():
     global sock
     sock.connect(server_adress)
