@@ -21,32 +21,31 @@ def connect():
     sock.connect(server_adress)
     return render_template('index.html')
 
-@app.route('/avanzar')
-def avanzar():
-    sock.sendall('1')# 1 será para avanzar
-    return render_template('index.html')
-
-@app.route('/detener')
+@app.route('/detener', methods = ["POST"])
 def detener():
-    sock.sendall('2') #2 sera para detener
+    sock.sendall(b'0') #0 sera para detener
     return render_template('index.html')
 
-@app.route('/retroceder')
+@app.route('/avanzar', methods = ["POST"])
+def avanzar():
+    sock.sendall(b'1')# 1 será para avanzar
+    return render_template('index.html')
+
+@app.route('/retroceder', methods = ["POST"])
 def retroceder():
-    sock.sendall('3') #3 sera para retroceder
+    sock.sendall(b'2') #2 sera para retroceder
     return render_template('index.hmtl')
 
-@app.route('/izquierda')
+@app.route('/izquierda', methods = ["POST"])
 def izquierda():
-    sock.sendall('4') #4 sera para izquierda
+    sock.sendall(b'3') #3 sera para izquierda
     return render_template('index.hmtl')
 
-@app.route('/derecha')
+@app.route('/derecha', methods = ["POST"])
 def derecha():
-    sock.sendall('5')# 5 sera para derecha
+    sock.sendall(b'4')# 4 sera para derecha
     return render_template('index.html')
 
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8888)
-
