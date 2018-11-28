@@ -6,7 +6,7 @@ import socket
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Connect the socket to the port where the server is listening
-server_address = ('192.168.4.1', 666)
+server_address = ('192.168.4.1', 80)
 
 app = Flask(__name__)
 
@@ -15,10 +15,10 @@ def index():
     global sock
     return render_template('index.html')
 
-@app.route('/connect')
+@app.route('/connect', methods =["POST"])
 def connect():
     global sock
-    sock.connect(server_adress)
+    sock.connect(server_address)
     return render_template('index.html')
 
 @app.route('/detener', methods = ["POST"])
