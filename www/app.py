@@ -6,7 +6,7 @@ import socket
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Connect the socket to the port where the server is listening
-server_address = ('192.168.4.1', 80)
+server_address = ('192.168.4.1', 666)
 
 app = Flask(__name__)
 
@@ -23,23 +23,25 @@ def connect():
 
 @app.route('/detener', methods = ["POST"])
 def detener():
+    global sock
     sock.sendall(b'0') #0 sera para detener
     return render_template('index.html')
 
 @app.route('/avanzar', methods = ["POST"])
 def avanzar():
+    global sock
     sock.sendall(b'1')# 1 será para avanzar
     return render_template('index.html')
 
 @app.route('/retroceder', methods = ["POST"])
 def retroceder():
     sock.sendall(b'2') #2 sera para retroceder
-    return render_template('index.hmtl')
+    return render_template('index.html')
 
 @app.route('/izquierda', methods = ["POST"])
 def izquierda():
     sock.sendall(b'3') #3 sera para izquierda
-    return render_template('index.hmtl')
+    return render_template('index.html')
 
 @app.route('/derecha', methods = ["POST"])
 def derecha():
