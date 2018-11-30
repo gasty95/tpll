@@ -15,7 +15,7 @@ SoftwareSerial softSerial(2,3); //RX, TX
 
 /*DEFINICIONES DE CONFIGURACION*/
 #define BAUDRATE            9600
-#define TAM_BUFFER          32  
+#define TAM_BUFFER          128  
 
 /*DEFINICIONES DE TIEMPO DE EJECUCION*/
 #define F_Communication       50
@@ -34,6 +34,9 @@ uint8_t buffer[TAM_BUFFER]={0};//buffer para enviar y recibir informacion
 uint32_t len=0;//Tamaño del mensaje recibido o el mensaje a enviar
 uint32_t frecuency=1; //variables que nos permite implementar un porgrmacion de tareas
 String data_send;
+uint8_t buffer2[TAM_BUFFER]={0};
+uint32_t buffer_size = 128;
+uint32_t timeout1= 1000;
 
 //variables de desplazamiento -> el vehiculo lee estas variables y decide su movimiento
 uint8_t direction=0; // 0=stop, 1=front, 2=back , 3=left , 4=right  //si va para adelante, atras, izquierda o derecha
@@ -83,7 +86,7 @@ void loop(void)
 
    // COMUNICACION
    if (frecuency % F_Communication == 0 ){ //SI es momento de procesar la comunicacion
-          len=wifi.recv(buffer,TAM_BUFFER, 1000);
+          len=wifi.recv(buffer2,128,1000);
           Serial.print (len);
           Serial.print("\r\n");
           if (len == 1){ //SI SE RECIBE ORDEN
@@ -114,14 +117,14 @@ void loop(void)
 void Configuration(){
    wifi.restart();
    delay(500);
-   if (wifi.setOprToStationSoftAP()) {
+   if (wifi.setOprToSoftAP()) {
       Serial.print("to station + softap ok\r\n");
    }
    else {
       Serial.print("to station + softap err\r\n");
    }
    
-    if (wifi.setSoftAPParam(SSID, PASSWORD,7,3)) {
+    if (wifi.setSoftAPParam(SSID, PASSWORD,3,0)) {
       Serial.print("AP param ok\r\n");
    }
    else {
@@ -135,7 +138,7 @@ void Configuration(){
       Serial.print("multiple err\r\n");
    }
  
-   if (wifi.startTCPServer(80)) {
+   if (wifi.startTCPServer(666)) {
       Serial.print("start tcp server ok\r\n");
    }
    else {
@@ -198,4 +201,4 @@ void avanzar(){
   servo4.write(120);
   delay(500);
   
-  }
+}
