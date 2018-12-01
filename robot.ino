@@ -15,7 +15,7 @@ SoftwareSerial softSerial(2,3); //RX, TX
 
 /*DEFINICIONES DE CONFIGURACION*/
 #define BAUDRATE            9600
-#define TAM_BUFFER          128  
+#define TAM_BUFFER          512  
 
 /*DEFINICIONES DE TIEMPO DE EJECUCION*/
 #define F_Communication       50
@@ -30,12 +30,15 @@ Servo servo2;
 Servo servo3; 
 Servo servo4;
 
+
+
+
 uint8_t buffer[TAM_BUFFER]={0};//buffer para enviar y recibir informacion
-uint32_t len=0;//Tamaño del mensaje recibido o el mensaje a enviar
+uint32_t len;//Tamaño del mensaje recibido o el mensaje a enviar
 uint32_t frecuency=1; //variables que nos permite implementar un porgrmacion de tareas
 String data_send;
 uint8_t buffer2[TAM_BUFFER]={0};
-uint32_t buffer_size = 128;
+uint32_t buffer_size = 512;
 uint32_t timeout1= 1000;
 
 //variables de desplazamiento -> el vehiculo lee estas variables y decide su movimiento
@@ -56,46 +59,50 @@ void setup(void)
 void loop(void)
 {
   // DEZPLAZAMIENTO
-   if (frecuency % F_Movement == 0 ){ //Si es momento de realizar un movimiento
+   /*if (frecuency % F_Movement == 0 ){ //Si es momento de realizar un movimiento
             if( direction == 1 ) { // Si voy hacia adelante
               Serial.print("AVANZAR\r\n");
-              avanzar();
+              //avanzar();
             } 
             if( direction == 2 ) { // Si voy hacia adelante
               Serial.print("RETROCEDER\r\n");
-              retroceder();
+              //retroceder();
             }
             if( direction == 3 ) { // Si voy hacia adelante
               Serial.print("IZQUIERDA\r\n");
-              izquierda();
+              //izquierda();
             } 
             if( direction == 4 ) { // Si voy hacia adelante
               Serial.print("DERECHA\r\n");
               //derecha();
             }
             if (direction == 0){
-              parar();
+              //parar();
             }
-      Serial.print(direction);
-      
-      Serial.print("\r\n");
+            Serial.print("dir:");
+            Serial.print(direction);
+            
+            Serial.print("\r\n");
    
    }
     // FIN DEZPLAZAMIENTO
-
+*/
 
    // COMUNICACION
    if (frecuency % F_Communication == 0 ){ //SI es momento de procesar la comunicacion
-          len=wifi.recv(buffer2,128,1000);
+          len=wifi.recv(buffer,sizeof(buffer),3000);
+          Serial.print ("len:");
           Serial.print (len);
           Serial.print("\r\n");
-          if (len == 1){ //SI SE RECIBE ORDEN
+          if (len >0){ //SI SE RECIBE ORDEN
                      Serial.print("ORDEN");
                      Serial.print("\r\n");
                //REcibí un mensaje de desplazamiento, almacenamiento de los movimientos que decidió el usuario
                      direction=buffer[0]-48; //se resta 48, pues el valro que se recibe está en ascci
+                     Serial.print("direccion: ");
                      Serial.print(direction);
-          }      
+                     Serial.print("\r\n");
+          }    
                     
    }
    // FIN COMUNICACION
@@ -146,7 +153,7 @@ void Configuration(){
    }
  
    if (wifi.setTCPServerTimeout(20)) {
-      Serial.print("set tcp server timout 20 seconds\r\n");
+      Serial.print("set tcp server timout 10 seconds\r\n");
    }
    else {
       Serial.print("set tcp server timout err\r\n");

@@ -2,50 +2,97 @@
 from flask import Flask
 from flask import render_template
 import socket
+import time
+
 
 # Create a TCP/IP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Connect the socket to the port where the server is listening
 server_address = ('192.168.4.1', 666)
-
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    global sock
     return render_template('index.html')
 
 @app.route('/connect', methods =["POST"])
 def connect():
-    global sock
-    sock.connect(server_address)
     return render_template('index.html')
 
-@app.route('/detener', methods = ["POST"])
-def detener():
-    global sock
-    sock.sendall(b'0') #0 sera para detener
-    return render_template('index.html')
-
-@app.route('/avanzar', methods = ["POST"])
+@app.route('/avanzar')
 def avanzar():
-    global sock
-    sock.sendall(b'1')# 1 será para avanzar
+    av=True
+    try:
+        s=socket.socket()
+        s.settimeout(5)
+        s.connect(server_address)
+        s.sendall(b'1')
+        print("envio")
+        s.close()
+    except socket.error as socketerror:
+        while (av):
+            try:
+                s=socket.socket()
+                s.settimeout(5)
+                s.connect(server_address)
+                s.sendall(b'1')
+                print("envio")
+                s.close()
+                av=False
+            except:
+                print("Error: ", socketerror)
     return render_template('index.html')
 
-@app.route('/retroceder', methods = ["POST"])
+@app.route('/detener')
+def detener():
+    try:
+        s=socket.socket()
+        s.settimeout(20)
+        s.connect(server_address)
+        s.sendall(b'0')
+        print("envio")
+        s.close()
+    except socket.error as socketerror:
+        print("Error: ", socketerror)
+    return render_template('index.html')
+
+@app.route('/retroceder')
 def retroceder():
-    sock.sendall(b'2') #2 sera para retroceder
+    try:
+        s=socket.socket()
+        s.settimeout(20)
+        s.connect(server_address)
+        s.sendall(b'2')
+        print("envio")
+        s.close()
+    except socket.error as socketerror:
+        print("Error: ", socketerror)
     return render_template('index.html')
 
-@app.route('/izquierda', methods = ["POST"])
+@app.route('/izquierda')
 def izquierda():
-    sock.sendall(b'3') #3 sera para izquierda
+    try:
+        s=socket.socket()
+        s.settimeout(20)
+        s.connect(server_address)
+        s.sendall(b'3')
+        print("envio")
+        s.close()
+    except socket.error as socketerror:
+        print("Error: ", socketerror)
     return render_template('index.html')
 
-@app.route('/derecha', methods = ["POST"])
+@app.route('/derecha')
 def derecha():
-    sock.sendall(b'4')# 4 sera para derecha
+    try:
+        s=socket.socket()
+        s.settimeout(20)
+        s.connect(server_address)
+        s.sendall(b'4')
+        print("envio")
+        s.close()
+    except socket.error as socketerror:
+        print("Error: ", socketerror)
     return render_template('index.html')
 
 
