@@ -15,10 +15,6 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/connect', methods =["POST"])
-def connect():
-    return render_template('index.html')
-
 @app.route('/avanzar')
 def avanzar():
     av=True
@@ -45,54 +41,98 @@ def avanzar():
 
 @app.route('/detener')
 def detener():
+    det=True
     try:
         s=socket.socket()
-        s.settimeout(20)
+        s.settimeout(5)
         s.connect(server_address)
         s.sendall(b'0')
         print("envio")
         s.close()
     except socket.error as socketerror:
-        print("Error: ", socketerror)
+        while (det):
+            try:
+                s=socket.socket()
+                s.settimeout(5)
+                s.connect(server_address)
+                s.sendall(b'0')
+                print("envio")
+                s.close()
+                det=False
+            except:
+                print("Error: ", socketerror)
     return render_template('index.html')
 
 @app.route('/retroceder')
 def retroceder():
+    ret=True
     try:
         s=socket.socket()
-        s.settimeout(20)
+        s.settimeout(5)
         s.connect(server_address)
         s.sendall(b'2')
         print("envio")
         s.close()
     except socket.error as socketerror:
-        print("Error: ", socketerror)
+        while (ret):
+            try:
+                s=socket.socket()
+                s.settimeout(5)
+                s.connect(server_address)
+                s.sendall(b'2')
+                print("envio")
+                s.close()
+                ret=False
+            except:
+                print("Error: ", socketerror)
     return render_template('index.html')
 
 @app.route('/izquierda')
 def izquierda():
+    izq=True
     try:
         s=socket.socket()
-        s.settimeout(20)
+        s.settimeout(5)
         s.connect(server_address)
         s.sendall(b'3')
         print("envio")
         s.close()
     except socket.error as socketerror:
-        print("Error: ", socketerror)
+        while (izq):
+            try:
+                s=socket.socket()
+                s.settimeout(5)
+                s.connect(server_address)
+                s.sendall(b'3')
+                print("envio")
+                s.close()
+                izq=False
+            except:
+                print("Error: ", socketerror)
     return render_template('index.html')
 
 @app.route('/derecha')
 def derecha():
+    der=True
     try:
         s=socket.socket()
-        s.settimeout(20)
+        s.settimeout(5)
         s.connect(server_address)
         s.sendall(b'4')
         print("envio")
         s.close()
     except socket.error as socketerror:
-        print("Error: ", socketerror)
+        while (der):
+            try:
+                s=socket.socket()
+                s.settimeout(5)
+                s.connect(server_address)
+                s.sendall(b'4')
+                print("envio")
+                s.close()
+                der=False
+            except:
+                print("Error: ", socketerror)
     return render_template('index.html')
 
 
