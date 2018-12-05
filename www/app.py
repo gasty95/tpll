@@ -26,6 +26,7 @@ def avanzar():
         print("envio")
         s.close()
     except socket.error as socketerror:
+        
         while (av):
             try:
                 s=socket.socket()
