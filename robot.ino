@@ -48,7 +48,7 @@ void setup(void)
 { 
     Serial.begin(BAUDRATE);
     Serial.println("setup begin\r\n");
-    servo1.attach(4);
+    servo1.attach(5);
     servo2.attach(6);
     servo3.attach(9);
     servo4.attach(11);
@@ -170,42 +170,60 @@ void parar(){
 }
 
 
-void izquierda(){ //prototipo
-    parar();
-    delay(500);
-    servo2.write(65);
-    delay(500);
-    servo2.write(90);
-    servo4.write(60);
-    delay(500);
+void izquierda(){ 
+  servo2.write(90);
+  servo4.write(90);
+  delay(500);
+  servo1.write(100);
+  servo2.write(70);  
+  servo3.write(70);
+  servo4.write(50);  
+  delay(500);
   }
 
+void derecha(){ 
+  servo1.write(90);
+  servo3.write(100);
+  delay(500);
+  servo1.write(70);
+  servo2.write(70);  
+  servo3.write(120);
+  servo4.write(110);  
+  delay(500);
+ }
+
 void retroceder(){
-  parar();
-  delay(500);
+  servo1.write(90);
+  servo2.write(90);
+  servo3.write(90);
+  servo4.write(90);
+  delay(1000);
   servo3.write(60);
-  delay(500);
+  delay(1000);
   servo4.write(120);
-  delay(500);
+  delay(1000);
   servo3.write(90);
   servo4.write(90);
   servo1.write(120);
   servo2.write(60);
-  delay(500);
+  delay(1000);
 }
 
 
 void avanzar(){
-  parar();
+  servo1.write(90);
+  servo2.write(90);
+  servo3.write(90);
+  servo4.write(90);
   delay(500);
-  servo1.write(120);
+  servo1.write(60);
   delay(500);
-  servo2.write(60);
+  servo2.write(120);
   delay(500);
   servo1.write(90);
   servo2.write(90);
-  servo3.write(60);
-  servo4.write(120);
+  servo3.write(120);
+  servo4.write(60);
   delay(500);
   
 }
