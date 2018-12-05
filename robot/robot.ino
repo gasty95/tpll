@@ -11,16 +11,15 @@ const char* PASSWORD = "pas123456";
 
 SoftwareSerial softSerial(2,3); //RX, TX
 
-/*FUNCIONES EDITADAS O DESARROLLADAS*/
 
 /*DEFINICIONES DE CONFIGURACION*/
 #define BAUDRATE            9600
 #define TAM_BUFFER          512  
 
 /*DEFINICIONES DE TIEMPO DE EJECUCION*/
-#define F_Communication       50
-#define F_Movement            97
-#define F_Testing             2000  
+#define F_comunicacion       50
+#define F_movimiento         97
+ 
 
 /*DECLARACION DE VARIABLES GLOBALES*/
 ESP8266 wifi(softSerial);
@@ -35,14 +34,11 @@ Servo servo4;
 
 uint8_t buffer[TAM_BUFFER]={0};//buffer para enviar y recibir informacion
 uint32_t len;//Tamaño del mensaje recibido o el mensaje a enviar
-uint32_t frecuency=1; //variables que nos permite implementar un porgrmacion de tareas
-String data_send;
-uint8_t buffer2[TAM_BUFFER]={0};
-uint32_t buffer_size = 512;
-uint32_t timeout1= 1000;
+uint32_t frecuencia=1; //variables que nos permite implementar un porgrmacion de tareas
+
 
 //variables de desplazamiento -> el vehiculo lee estas variables y decide su movimiento
-uint8_t direction=0; // 0=stop, 1=front, 2=back , 3=left , 4=right  //si va para adelante, atras, izquierda o derecha
+uint8_t direction=0; // 0=parar, 1=avanzar, 2=retroceder , 3=izquierda , 4=derecha  //si va para adelante, atras, izquierda o derecha
 
 void setup(void)
 { 
@@ -59,7 +55,7 @@ void setup(void)
 void loop(void)
 {
   // DEZPLAZAMIENTO
-   if (frecuency % F_Movement == 0 ){ //Si es momento de realizar un movimiento
+   if (frecuencia % F_movimiento == 0 ){ //Si es momento de realizar un movimiento
             if( direction == 1 ) { // Si voy hacia adelante
               Serial.print("AVANZAR\r\n");
               avanzar();
@@ -91,7 +87,7 @@ void loop(void)
 
 
    // COMUNICACION
-   if (frecuency % F_Communication == 0 ){ //SI es momento de procesar la comunicacion
+   if (frecuencia % F_comunicacion == 0 ){ //Si es momento de procesar la comunicacion
           len=wifi.recv(buffer,sizeof(buffer),1000);
           Serial.print ("len:");
           Serial.print (len);
@@ -99,7 +95,7 @@ void loop(void)
           if (len >0){ //SI SE RECIBE ORDEN
                      Serial.print("ORDEN");
                      Serial.print("\r\n");
-               //REcibí un mensaje de desplazamiento, almacenamiento de los movimientos que decidió el usuario
+               //Recibí un mensaje de desplazamiento, almacenamiento de los movimientos que decidió el usuario
                      direction=buffer[0]-48; //se resta 48, pues el valro que se recibe está en ascci
                      Serial.print("direccion: ");
                      Serial.print(direction);
@@ -110,13 +106,9 @@ void loop(void)
    // FIN COMUNICACION
 
 
-// CONFIGURACION DE TIEMPOS
- //delayMicroseconds(1000);
-  // delay(1); //espera entre iteraciones
-
-  frecuency++;//Aumento de la iteracion realizada
-  if (frecuency == 6300){
-      frecuency=0;
+  frecuencia++;//Aumento de la iteracion realizada
+  if (frecuenia == 6300){
+      frecuencia=0;
   }
 // FIN CONFIGURACION DE TIEMPOS    
 }
@@ -172,42 +164,43 @@ void parar(){
 }
 
 
-void izquierda(){ 
+void izquierda(){
   servo2.write(90);
   servo4.write(90);
-  delay(500);
+  delay(800);
   servo1.write(100);
   servo2.write(70);  
   servo3.write(70);
   servo4.write(50);  
-  delay(500);
-  }
-
+  delay(800);
+ }
+ 
 void derecha(){ 
   servo1.write(90);
   servo3.write(100);
-  delay(500);
+  delay(800);
   servo1.write(70);
   servo2.write(70);  
   servo3.write(120);
   servo4.write(110);  
-  delay(500);
+  delay(800);
  }
 
+
 void avanzar(){
-  servo1.write(90);
-  servo2.write(90);
+  servo1.write(85);
+  servo2.write(95);
   servo3.write(90);
   servo4.write(90);
   delay(500);
-  servo3.write(60);
+  servo3.write(120);
   delay(500);
-  servo4.write(120);
+  servo4.write(60);
   delay(500);
   servo3.write(90);
   servo4.write(90);
-  servo1.write(120);
-  servo2.write(60);
+  servo1.write(60);
+  servo2.write(120);
   delay(500);
 }
 
@@ -228,4 +221,4 @@ void retroceder(){
   servo4.write(60);
   delay(500);
   
-}
+  }
