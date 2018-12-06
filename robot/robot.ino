@@ -1,8 +1,6 @@
 #include <doxygen.h>
-#include "ESP8266.h"
+#include <ESP8266.h>
 #include <SoftwareSerial.h>
-
-/*FUNCIONES ORIGINALES*/
 #include <Arduino.h>
 #include <Servo.h>
 
@@ -12,18 +10,14 @@ const char* PASSWORD = "pas123456";
 SoftwareSerial softSerial(2,3); //RX, TX
 
 
-/*DEFINICIONES DE CONFIGURACION*/
+//DEFINICIONES de constantes
 #define BAUDRATE            9600
 #define TAM_BUFFER          512  
-
-/*DEFINICIONES DE TIEMPO DE EJECUCION*/
 #define F_comunicacion       50
 #define F_movimiento         97
  
-
-/*DECLARACION DE VARIABLES GLOBALES*/
+// Declaramos las variables globales
 ESP8266 wifi(softSerial);
-// Declaramos la variable para controlar el servo
 Servo servo1;
 Servo servo2;
 Servo servo3; 
@@ -32,13 +26,13 @@ Servo servo4;
 
 
 
-uint8_t buffer[TAM_BUFFER]={0};//buffer para enviar y recibir informacion
-uint32_t len;//Tamaño del mensaje recibido o el mensaje a enviar
-uint32_t frecuencia=1; //variables que nos permite implementar un porgrmacion de tareas
+uint8_t buffer[TAM_BUFFER]={0};//buffer para recibir informacion
+uint32_t len;//Tamaño del mensaje recibido
+uint32_t frecuencia=1; //variable que nos permite administrar las tareas
 
 
-//variables de desplazamiento -> el vehiculo lee estas variables y decide su movimiento
-uint8_t direction=0; // 0=parar, 1=avanzar, 2=retroceder , 3=izquierda , 4=derecha  //si va para adelante, atras, izquierda o derecha
+//variable de movimiento
+uint8_t direccion=0; // 0=parar, 1=avanzar, 2=retroceder , 3=izquierda , 4=derecha  //si va para adelante, atras, izquierda o derecha
 
 void setup(void)
 { 
@@ -54,63 +48,63 @@ void setup(void)
  
 void loop(void)
 {
-  // DEZPLAZAMIENTO
+  // Control de Movimiento
    if (frecuencia % F_movimiento == 0 ){ //Si es momento de realizar un movimiento
-            if( direction == 1 ) { // Si voy hacia adelante
+            if( direccion == 1 ) { // Si voy hacia adelante
               Serial.print("AVANZAR\r\n");
               avanzar();
             } 
-            if( direction == 2 ) { // Si voy hacia adelante
+            if( direccion == 2 ) { // Si voy hacia atras
               Serial.print("RETROCEDER\r\n");
               retroceder();
             }
-            if( direction == 3 ) { // Si voy hacia adelante
+            if( direccion == 3 ) { // Si voy hacia izquierda
               Serial.print("IZQUIERDA\r\n");
               for(int i=0; i<3;i++)
                 izquierda();
             } 
-            if( direction == 4 ) { // Si voy hacia adelante
+            if( direccion == 4 ) { // Si voy hacia derecha
               Serial.print("DERECHA\r\n");
               for(int i=0; i<3;i++)
                 derecha();
             }
-            if (direction == 0){
+            if (direccion == 0){  // Si me detengo
               parar();
             }
             Serial.print("dir:");
-            Serial.print(direction);
+            Serial.print(direccion);
             
             Serial.print("\r\n");
    
    }
-    // FIN DEZPLAZAMIENTO
+    // termina el control del movimiento
 
 
-   // COMUNICACION
-   if (frecuencia % F_comunicacion == 0 ){ //Si es momento de procesar la comunicacion
+   // Control de la Comunicacion
+   if (frecuencia % F_comunicacion == 0 ){ //Si es momento de controlar la comunicacion
           len=wifi.recv(buffer,sizeof(buffer),1000);
           Serial.print ("len:");
           Serial.print (len);
           Serial.print("\r\n");
-          if (len >0){ //SI SE RECIBE ORDEN
+          if (len >0){ //Si se recibe una orden
                      Serial.print("ORDEN");
                      Serial.print("\r\n");
-               //Recibí un mensaje de desplazamiento, almacenamiento de los movimientos que decidió el usuario
-                     direction=buffer[0]-48; //se resta 48, pues el valro que se recibe está en ascci
+               //Recibí un mensaje de movimiento, almacenamiento de los movimientos que decidió el usuario
+                     direccion=buffer[0]-48; //se resta 48 porque el valor que se recibe está en ascci
                      Serial.print("direccion: ");
-                     Serial.print(direction);
+                     Serial.print(direccion);
                      Serial.print("\r\n");
           }    
                     
    }
-   // FIN COMUNICACION
+   //termina el control de la comunicacion
 
 
   frecuencia++;//Aumento de la iteracion realizada
-  if (frecuenia == 6300){
+  if (frecuencia == 6300){
       frecuencia=0;
   }
-// FIN CONFIGURACION DE TIEMPOS    
+  
 }
 
 //-------------------------------//FUNCIONES//-------------------------------//
